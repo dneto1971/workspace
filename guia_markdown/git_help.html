@@ -1,9 +1,7 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><title></title></head><body><pre><code>            Git Manual                                               
-            
-            GIT-COMMIT
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><title></title></head><body><pre><code>            Git Commit Help
 </code></pre>
 <p>NAME
-git-commit - Record changes to the repository</p>
+git-commit - Grava alterações no repositório</p>
 <pre><code>   SYNOPSIS
    git commit [-a | --interactive | --patch] [-s] [-v] [-u&lt;mode&gt;] [--amend]
               [--dry-run] [(-c | -C | --squash) &lt;commit&gt; | --fixup [(amend|reword):]&lt;commit&gt;)]
@@ -14,461 +12,437 @@ git-commit - Record changes to the repository</p>
               [(--trailer &lt;token&gt;[(=|:)&lt;value&gt;])...] [-S[&lt;keyid&gt;]]
               [--] [&lt;pathspec&gt;...]
 </code></pre>
-<p>DESCRIPTION</p>
-<p>Create a new commit containing the current contents of the index and the given log message describing the changes. The new
-commit is a direct child of HEAD, usually the tip of the current branch, and the branch is updated to point to it (unless no
-branch is associated with the working tree, in which case HEAD is “detached” as described in git-checkout(1)).</p>
-<pre><code>   The content to be committed can be specified in several ways:
+<p>DESCRIÇÃO</p>
+<p>Crie um novo commit contendo o conteúdo atual do índice e a mensagem de log fornecida descrevendo as alterações. O novo commit é um filho direto de HEAD, geralmente a ponta do branch atual, e o branch é atualizado para apontar para ele (a menos que não branch está associado com a árvore de trabalho, neste caso HEAD é “desanexado” conforme descrito em git-checkout(1)).</p>
+<pre><code>   O conteúdo a ser confirmado pode ser especificado de várias maneiras:
 
-    1. by using git-add(1) to incrementally &quot;add&quot; changes to the index before using the commit command (Note: even modified
-       files must be &quot;added&quot;);
+ 1. usando git-add(1) para &quot;adicionar&quot; alterações incrementalmente ao índice antes de usar o comando commit (Nota: mesmo modificado os arquivos devem ser &quot;adicionados&quot;);
 
-    2. by using git-rm(1) to remove files from the working tree and the index, again before using the commit command;
+ 2. usando git-rm(1) para remover arquivos da árvore de trabalho e do índice, novamente antes de usar o comando commit;
 
-    3. by listing files as arguments to the commit command (without --interactive or --patch switch), in which case the commit
-       will ignore changes staged in the index, and instead record the current content of the listed files (which must already
-       be known to Git);
+ 3. listando arquivos como argumentos para o comando commit (sem --interactive ou --patch switch), caso em que o commit irá ignorar as alterações feitas no índice e, em vez disso, gravará o conteúdo atual dos arquivos listados (que já devem ser conhecido pelo Git);
 
-    4. by using the -a switch with the commit command to automatically &quot;add&quot; changes from all known files (i.e. all files that
-       are already listed in the index) and to automatically &quot;rm&quot; files in the index that have been removed from the working
-       tree, and then perform the actual commit;
+ 4. usando a opção -a com o comando commit para &quot;adicionar&quot; automaticamente as alterações de todos os arquivos conhecidos (ou seja, todos os arquivos que já estão listados no índice) e automaticamente &quot;rm&quot; arquivos no índice que foram removidos do trabalho tree e, em seguida, execute o commit real;
 
-    5. by using the --interactive or --patch switches with the commit command to decide one by one which files or hunks should
-       be part of the commit in addition to contents in the index, before finalizing the operation. See the “Interactive Mode”
-       section of git-add(1) to learn how to operate these modes.
+ 5. usando as opções --interactive ou --patch com o comando commit para decidir um por um quais arquivos ou blocos devem fazer parte do commit além do conteúdo no índice, antes de finalizar a operação.  Veja o “Modo Interativo” seção do git-add(1) para aprender como operar esses modos.
 
-   The --dry-run option can be used to obtain a summary of what is included by any of the above for the next commit by giving
-   the same set of parameters (options and paths).
+A opção --dry-run pode ser usada para obter um resumo do que está incluído em qualquer um dos itens acima para o próximo commit, dando
+o mesmo conjunto de parâmetros (opções e caminhos).
 
-   If you make a commit and then find a mistake immediately after that, you can recover from it with git reset.
+Se você fizer um commit e encontrar um erro imediatamente depois disso, poderá recuperá-lo com git reset.
 </code></pre>
-<p>OPTIONS</p>
+<p>OPÇÕES</p>
 <pre><code>   -a, --all
-       Tell the command to automatically stage files that have been modified and deleted, but new files you have not told Git
-       about are not affected.
-
-   -p, --patch
-       Use the interactive patch selection interface to choose which changes to commit. See git-add(1) for details.
-
-   -C &lt;commit&gt;, --reuse-message=&lt;commit&gt;
-       Take an existing commit object, and reuse the log message and the authorship information (including the timestamp) when
-       creating the commit.
-
-   -c &lt;commit&gt;, --reedit-message=&lt;commit&gt;
-       Like -C, but with -c the editor is invoked, so that the user can further edit the commit message.
-
-   --fixup=[(amend|reword):]&lt;commit&gt;
-       Create a new commit which &quot;fixes up&quot; &lt;commit&gt; when applied with git rebase --autosquash. Plain --fixup=&lt;commit&gt; creates
-       a &quot;fixup!&quot; commit which changes the content of &lt;commit&gt; but leaves its log message untouched.  --fixup=amend:&lt;commit&gt; is
-       similar but creates an &quot;amend!&quot; commit which also replaces the log message of &lt;commit&gt; with the log message of the
-       &quot;amend!&quot; commit.  --fixup=reword:&lt;commit&gt; creates an &quot;amend!&quot; commit which replaces the log message of &lt;commit&gt; with its
-       own log message but makes no changes to the content of &lt;commit&gt;.
-
-       The commit created by plain --fixup=&lt;commit&gt; has a subject composed of &quot;fixup!&quot; followed by the subject line from
-       &lt;commit&gt;, and is recognized specially by git rebase --autosquash. The -m option may be used to supplement the log
-       message of the created commit, but the additional commentary will be thrown away once the &quot;fixup!&quot; commit is squashed
-       into &lt;commit&gt; by git rebase --autosquash.
-
-       The commit created by --fixup=amend:&lt;commit&gt; is similar but its subject is instead prefixed with &quot;amend!&quot;. The log
-       message of &lt;commit&gt; is copied into the log message of the &quot;amend!&quot; commit and opened in an editor so it can be refined.
-       When git rebase --autosquash squashes the &quot;amend!&quot; commit into &lt;commit&gt;, the log message of &lt;commit&gt; is replaced by the
-       refined log message from the &quot;amend!&quot; commit. It is an error for the &quot;amend!&quot; commit’s log message to be empty unless
-       --allow-empty-message is specified.
-
-       --fixup=reword:&lt;commit&gt; is shorthand for --fixup=amend:&lt;commit&gt; --only. It creates an &quot;amend!&quot; commit with only a log
-       message (ignoring any changes staged in the index). When squashed by git rebase --autosquash, it replaces the log
-       message of &lt;commit&gt; without making any other changes.
-
-       Neither &quot;fixup!&quot; nor &quot;amend!&quot; commits change authorship of &lt;commit&gt; when applied by git rebase --autosquash. See git-
-       rebase(1) for details.
-
-   --squash=&lt;commit&gt;
-       Construct a commit message for use with rebase --autosquash. The commit message subject line is taken from the specified
-       commit with a prefix of &quot;squash! &quot;. Can be used with additional commit message options (-m/-c/-C/-F). See git-rebase(1)
-       for details.
+    Diga ao comando para preparar automaticamente os arquivos que foram modificados e excluídos, mas os novos arquivos que você não informou ao Git
+    sobre não são afetados.
+
+-p, --patch
+    Use a interface interativa de seleção de patches para escolher quais alterações serão confirmadas.  Veja git-add(1) para detalhes.
+
+-C &lt;commit&gt;, --reuse-message=&lt;commit&gt;
+    Pegue um objeto de confirmação existente e reutilize a mensagem de log e as informações de autoria (incluindo o carimbo de data/hora) quando
+    criando o commit.
+
+-c &lt;commit&gt;, --reedit-message=&lt;commit&gt;
+    Como -C, mas com -c o editor é invocado, para que o usuário possa editar ainda mais a mensagem de confirmação.
+
+--fixup=[(amend|reword):]&lt;commit&gt;
+    Crie um novo commit que &quot;corrige&quot; &lt;commit&gt; quando aplicado com git rebase --autosquash.  Simples --fixup=&lt;commit&gt; cria
+    um &quot;conserto!&quot;  commit que altera o conteúdo de &lt;commit&gt; mas deixa sua mensagem de log intocada.  --fixup=amend:&lt;commit&gt; é
+    semelhante, mas cria uma &quot;alteração!&quot;  commit que também substitui a mensagem de log de &lt;commit&gt; pela mensagem de log do
+    &quot;alterar!&quot;  comprometer-se.  --fixup=reword:&lt;commit&gt; cria uma &quot;alteração!&quot;  commit que substitui a mensagem de log de &lt;commit&gt; por seu
+    própria mensagem de log, mas não faz alterações no conteúdo de &lt;commit&gt;.
+
+    O commit criado por plain --fixup=&lt;commit&gt; tem um assunto composto por &quot;fixup!&quot;  seguido pela linha de assunto de
+    &lt;commit&gt;, e é reconhecido especialmente pelo git rebase --autosquash.  A opção -m pode ser usada para complementar o log
+    mensagem do commit criado, mas o comentário adicional será descartado assim que o &quot;fixup!&quot;  commit é esmagado
+    em &lt;commit&gt; por git rebase --autosquash.
+
+    O commit criado por --fixup=amend:&lt;commit&gt; é semelhante, mas seu assunto é prefixado com &quot;amend!&quot;.  O registro
+    mensagem de &lt;commit&gt; é copiada para a mensagem de log do &quot;amend!&quot;  commit e aberto em um editor para que possa ser refinado.
+    Quando git rebase --autosquash esmaga o &quot;amend!&quot;  commit em &lt;commit&gt;, a mensagem de log de &lt;commit&gt; é substituída pelo
+    mensagem de log refinada do &quot;amend!&quot;  comprometer-se.  É um erro para &quot;alterar!&quot;  a mensagem de log do commit esteja vazia, a menos que
+    --allow-empty-message é especificado.
+
+    --fixup=reword:&lt;commit&gt; é uma abreviação de --fixup=amend:&lt;commit&gt; --only.  Ele cria uma &quot;alteração!&quot;  commit com apenas um log
+    mensagem (ignorando quaisquer alterações encenadas no índice).  Quando esmagado por git rebase --autosquash, ele substitui o log
+    mensagem de &lt;commit&gt; sem fazer nenhuma outra alteração.
+
+    Nem &quot;consertar!&quot;  nem &quot;alterar!&quot;  commits alteram a autoria de &lt;commit&gt; quando aplicado por git rebase --autosquash.  Veja gi-
+    rebase(1) para detalhes.
+
+--squash=&lt;commit&gt;
+    Construa uma mensagem de commit para uso com rebase --autosquash.  A linha de assunto da mensagem de confirmação é retirada do especificado
+    commit com um prefixo de &quot;squash!&quot;.  Pode ser usado com opções de mensagem de confirmação adicionais (-m/-c/-C/-F).  Veja git-rebase(1)
+    para detalhes.
 
-   --reset-author
-       When used with -C/-c/--amend options, or when committing after a conflicting cherry-pick, declare that the authorship of
-       the resulting commit now belongs to the committer. This also renews the author timestamp.
+--reset-author
+    Quando usado com opções -C/-c/--amend, ou ao confirmar após uma escolha conflitante, declare que a autoria de
+    o commit resultante agora pertence ao committer.  Isso também renova o carimbo de data/hora do autor.
 
-   --short
-       When doing a dry-run, give the output in the short-format. See git-status(1) for details. Implies --dry-run.
+--short
+    Ao fazer uma simulação, forneça a saída no formato curto.  Veja git-status(1) para detalhes.  Implica --dry-run.
 
-   --branch
-       Show the branch and tracking info even in short-format.
+--branch
+    Mostre a branch e as informações de rastreamento, mesmo em formato curto.
 
-   --porcelain
-       When doing a dry-run, give the output in a porcelain-ready format. See git-status(1) for details. Implies --dry-run.
-
-   --long
-       When doing a dry-run, give the output in the long-format. Implies --dry-run.
+--porcelain
+    Ao fazer uma execução a seco, dê a saída em um formato pronto para porcelana.  Veja git-status(1) para detalhes.  Implica --dry-run.
 
-   -z, --null
-       When showing short or porcelain status output, print the filename verbatim and terminate the entries with NUL, instead
-       of LF. If no format is given, implies the --porcelain output format. Without the -z option, filenames with &quot;unusual&quot;
-       characters are quoted as explained for the configuration variable core.quotePath (see git-config(1)).
+--long
+    Ao fazer uma simulação, forneça a saída no formato longo.  Implica --dry-run.
 
-   -F &lt;file&gt;, --file=&lt;file&gt;
-       Take the commit message from the given file. Use - to read the message from the standard input.
+-z, --null
+    Ao mostrar a saída de status curto ou porcelana, imprima o nome do arquivo literalmente e encerre as entradas com NUL, em vez disso
+    de LF.  Se nenhum formato for fornecido, implica o formato de saída --porcelain.  Sem a opção -z, nomes de arquivos com &quot;incomum&quot;
+    os caracteres são citados conforme explicado para a variável de configuração core.quotePath (veja git-config(1)).
 
-   --author=&lt;author&gt;
-       Override the commit author. Specify an explicit author using the standard A U Thor &lt;author@example.com&gt; format.
-       Otherwise &lt;author&gt; is assumed to be a pattern and is used to search for an existing commit by that author (i.e. rev-list
-       --all -i --author=&lt;author&gt;); the commit author is then copied from the first such commit found.
+-F &lt;arquivo&gt;, --arquivo=&lt;arquivo&gt;
+    Pegue a mensagem de confirmação do arquivo fornecido.  Use - para ler a mensagem da entrada padrão.
 
-   --date=&lt;date&gt;
-       Override the author date used in the commit.
+--author=&lt;author&gt;
+    Substitua o autor do commit.  Especifique um autor explícito usando o formato AU Thor &lt;author@example.com&gt; padrão.
+    Caso contrário, assume-se que &lt;author&gt; é um padrão eéusado para procurar um commit existente desse autor (ie rev-list
+    --all -i --autor=&lt;autor&gt;);  o autor do commit é então copiado do primeiro commit encontrado.
 
-   -m &lt;msg&gt;, --message=&lt;msg&gt;
-       Use the given &lt;msg&gt; as the commit message. If multiple -m options are given, their values are concatenated as separate
-       paragraphs.
+--date=&lt;date&gt;
+    Substitui a data do autor usada no commit.
 
-       The -m option is mutually exclusive with -c, -C, and -F.
+-m &lt;msg&gt;, --message=&lt;msg&gt;
+    Use o &lt;msg&gt; fornecido como a mensagem de confirmação.  Se várias opções -m forem fornecidas, seus valores serão concatenados como parágrafos separados.
 
-   -t &lt;file&gt;, --template=&lt;file&gt;
-       When editing the commit message, start the editor with the contents in the given file. The commit.template configuration
-       variable is often used to give this option implicitly to the command. This mechanism can be used by projects that want
-       to guide participants with some hints on what to write in the message in what order. If the user exits the editor
-       without editing the message, the commit is aborted. This has no effect when a message is given by other means, e.g. with
-       the -m or -F options.
+    A opção -m é mutuamente exclusiva com -c, -C e -F.
 
-   -s, --signoff, --no-signoff
-       Add a Signed-off-by trailer by the committer at the end of the commit log message. The meaning of a signoff depends on
-       the project to which you’re committing. For example, it may certify that the committer has the rights to submit the work
-       under the project’s license or agrees to some contributor representation, such as a Developer Certificate of Origin.
-       (See http://developercertificate.org for the one used by the Linux kernel and Git projects.) Consult the documentation
-       or leadership of the project to which you’re contributing to understand how the signoffs are used in that project.
+-t &lt;arquivo&gt;, --template=&lt;arquivo&gt;
+    Ao editar a mensagem de confirmação, inicie o editor com o conteúdo do arquivo fornecido.  A configuração commit.template
+    A variável é frequentemente usada para fornecer essa opção implicitamente ao comando.  Este mecanismo pode ser usado por projetos que desejam
+    orientar os participantes com algumas dicas sobre o que escrever na mensagem em que ordem.  Se o usuário sair do editor
+    sem editar a mensagem, o commit é abortado.  Isso não tem efeito quando uma mensagem é dada por outros meios, por exemplo, com
+    as opções -m ou -F.
 
-       The --no-signoff option can be used to countermand an earlier --signoff option on the command line.
+-s, --signoff, --no-signoff
+    Adicione um trailer assinado pelo committer no final da mensagem de log de commit.  O significado de uma assinatura depende
+    o projeto com o qual você está se comprometendo.  Por exemplo, pode certificar que o comitente tem o direito de submeter o trabalho
+    sob a licença do projeto ou concorda com alguma representação do contribuidor, como um Certificado de Origem do Desenvolvedor.
+    (Veja http://developercertificate.org para o usado pelo kernel Linux e projetos Git.) Consulte a documentação
+    ou liderança do projeto para o qual você está contribuindo para entender como as aprovações são usadas nesse projeto.
 
-   --trailer &lt;token&gt;[(=|:)&lt;value&gt;]
-       Specify a (&lt;token&gt;, &lt;value&gt;) pair that should be applied as a trailer. (e.g.  git commit --trailer &quot;Signed-off-by:C O
-       Mitter \ &lt;committer@example.com&gt;&quot; --trailer &quot;Helped-by:C O Mitter \ &lt;committer@example.com&gt;&quot; will add the
-       &quot;Signed-off-by&quot; trailer and the &quot;Helped-by&quot; trailer to the commit message.) The trailer.*  configuration variables (git-
-       interpret-trailers(1)) can be used to define if a duplicated trailer is omitted, where in the run of trailers each
-       trailer would appear, and other details.
+    A opção --no-signoff pode ser usada para anular uma opção --signoff anterior na linha de comando.
 
-   -n, --[no-]verify
-       By default, the pre-commit and commit-msg hooks are run. When any of --no-verify or -n is given, these are bypassed. See
-       also githooks(5).
+--trailer &lt;token&gt;[(=|:)&lt;valor&gt;]
+    Especifique um par (&lt;token&gt;, &lt;value&gt;) que deve ser aplicado como trailer.  (por exemplo, git commit --trailer &quot;Signed-off-by:CO
+    Mitter \ &lt;committer@example.com&gt;&quot; --trailer &quot;Ajudado por:CO Mitter \ &lt;committer@example.com&gt;&quot; adicionará o
+    O trailer &quot;Signed-off-by&quot; e o trailer &quot;Helped-by&quot; para a mensagem de confirmação.) As variáveis ​​de configuração trailer.* (git-
+    interpret-trailers(1)) pode ser usado para definir se um trailer duplicado é omitido, onde na execução de trailers cada
+    trailer apareceria, e outros detalhes.
 
-   --allow-empty
-       Usually recording a commit that has the exact same tree as its sole parent commit is a mistake, and the command prevents
-       you from making such a commit. This option bypasses the safety, and is primarily for use by foreign SCM interface
-       scripts.
+-n, --[no-]verify
+    Por padrão, os hooks pre-commit e commit-msg são executados.  Quando qualquer --no-verify ou -n é fornecido, eles são ignorados.  Ver
+    também gitooks(5).
 
-   --allow-empty-message
-       Like --allow-empty this command is primarily for use by foreign SCM interface scripts. It allows you to create a commit
-       with an empty commit message without using plumbing commands like git-commit-tree(1).
+--allow-empty(permitir-vazio)
+    Normalmente gravar um commit que tem exatamente a mesma árvore que seu único commit pai é um erro, e o comando previne
+    você de fazer tal compromisso.  Esta opção ignora a segurança e é principalmente para uso por interface SCM estrangeira
+    roteiros.
 
-   --cleanup=&lt;mode&gt;
-       This option determines how the supplied commit message should be cleaned up before committing. The &lt;mode&gt; can be strip,
-       whitespace, verbatim, scissors or default.
+--allow-empty-message(permitir-mensagem vazia)
+    Como --allow-empty este comando é principalmente para uso por scripts de interface SCM estrangeiros.  Ele permite que você crie um commit
+    com uma mensagem de commit vazia sem usar comandos de encanamento como git-commit-tree(1).
 
-       strip
-           Strip leading and trailing empty lines, trailing whitespace, commentary and collapse consecutive empty lines.
+--cleanup=&lt;modo&gt;
+    Esta opção determina como a mensagem de confirmação fornecida deve ser limpa antes da confirmação.  O &lt;mode&gt; pode ser strip,
+    espaço em branco, verbatim, tesoura ou padrão.
 
-       whitespace
-           Same as strip except #commentary is not removed.
+    strip
+        Tirar linhas vazias à esquerda e à direita, espaços em branco à direita, comentários e recolher linhas vazias consecutivas.
 
-       verbatim
-           Do not change the message at all.
+    whitespace
+        Igual à tira, exceto que o #comentário não é removido.
 
-       scissors
-           Same as whitespace except that everything from (and including) the line found below is truncated, if the message is
-           to be edited. &quot;#&quot; can be customized with core.commentChar.
+    verbatim
+        Não altere a mensagem de forma alguma.
 
-               # ------------------------ &gt;8 ------------------------
+    scissors
+        O mesmo que espaço em branco, exceto que tudo (incluindo) a linha encontrada abaixo é truncado, se a mensagem for
+        para ser editado.  &quot;#&quot; pode ser personalizado com core.commentChar.
 
-       default
-           Same as strip if the message is to be edited. Otherwise whitespace.
+            # ------------------------ &gt;8 ----------------------- -
 
-       The default can be changed by the commit.cleanup configuration variable (see git-config(1)).
+    default
+        O mesmo que strip se a mensagem for editada.  Caso contrário, espaço em branco.
 
-   -e, --edit
-       The message taken from file with -F, command line with -m, and from commit object with -C are usually used as the commit
-       log message unmodified. This option lets you further edit the message taken from these sources.
+    O padrão pode ser alterado pela variável de configuração commit.cleanup (veja git-config(1)).
 
-   --no-edit
-       Use the selected commit message without launching an editor. For example, git commit --amend --no-edit amends a commit
-       without changing its commit message.
+-e, --edit
+    A mensagem retirada do arquivo com -F, linha de comando com -m e do objeto de confirmação com -C geralmente são usadas como confirmação
+    mensagem de log não modificada.  Esta opção permite editar ainda mais a mensagem extraída dessas fontes.
 
-   --amend
-       Replace the tip of the current branch by creating a new commit. The recorded tree is prepared as usual (including the
-       effect of the -i and -o options and explicit pathspec), and the message from the original commit is used as the starting
-       point, instead of an empty message, when no other message is specified from the command line via options such as -m, -F,
-       -c, etc. The new commit has the same parents and author as the current one (the --reset-author option can countermand
-       this).
+--no-edit
+    Use a mensagem de confirmação selecionada sem iniciar um editor.  Por exemplo, git commit --amend --no-edit altera um commit
+    sem alterar sua mensagem de confirmação.
 
-       It is a rough equivalent for:
+--amend(alterar)
+    Substitua a ponta do branch atual criando um novo commit.  A árvore gravada é preparada como de costume (incluindo o
+    efeito das opções -i e -o e pathspec explícito), e a mensagem do commit original é usada como
+    point, em vez de uma mensagem vazia, quando nenhuma outra mensagem é especificada na linha de comando por meio de opções como -m, -F,
+    -c, etc. O novo commit tem os mesmos pais e autor que o atual (a opção --reset-author pode anular
+    esta).
 
-                   $ git reset --soft HEAD^
-                   $ ... do something else to come up with the right tree ...
-                   $ git commit -c ORIG_HEAD
+    É um equivalente aproximado para:
 
-       but can be used to amend a merge commit.
+                $ git reset --soft HEAD^
+                $ ... fazer outra coisa para chegar à árvore certa ...
+                $ git commit -c ORIG_HEAD
 
-       You should understand the implications of rewriting history if you amend a commit that has already been published. (See
-       the &quot;RECOVERING FROM UPSTREAM REBASE&quot; section in git-rebase(1).)
+    mas pode ser usado para alterar um commit de merge.
 
-   --no-post-rewrite
-       Bypass the post-rewrite hook.
+    Você deve entender as implicações de reescrever o histórico se alterar um commit que já foi publicado.  (Ver
+    a seção &quot;RECOVERING FROM UPSTREAM REBASE&quot; no git-rebase(1).)
 
-   -i, --include
-       Before making a commit out of staged contents so far, stage the contents of paths given on the command line as well.
-       This is usually not what you want unless you are concluding a conflicted merge.
+--no-post-rewrite(sem pós-reescrita)
+    Ignore o gancho pós-reescrita.
 
-   -o, --only
-       Make a commit by taking the updated working tree contents of the paths specified on the command line, disregarding any
-       contents that have been staged for other paths. This is the default mode of operation of git commit if any paths are
-       given on the command line, in which case this option can be omitted. If this option is specified together with --amend,
-       then no paths need to be specified, which can be used to amend the last commit without committing changes that have
-       already been staged. If used together with --allow-empty paths are also not required, and an empty commit will be
-       created.
+-i, --include
+    Antes de fazer uma confirmação do conteúdo preparado até agora, prepare também o conteúdo dos caminhos fornecidos na linha de comando.
+    Isso geralmente não é o que você deseja, a menos que esteja concluindo uma mesclagem conflitante.
 
-   --pathspec-from-file=&lt;file&gt;
-       Pathspec is passed in &lt;file&gt; instead of commandline args. If &lt;file&gt; is exactly - then standard input is used. Pathspec
-       elements are separated by LF or CR/LF. Pathspec elements can be quoted as explained for the configuration variable
-       core.quotePath (see git-config(1)). See also --pathspec-file-nul and global --literal-pathspecs.
+-o, --only
+    Faça um commit pegando o conteúdo atualizado da árvore de trabalho dos caminhos especificados na linha de comando, desconsiderando qualquer
+    conteúdos que foram encenados para outros caminhos.  Este é o modo padrão de operação do git commit se algum caminho for
+    dado na linha de comando, neste caso esta opção pode ser omitida.  Se esta opção for especificada junto com --amend,
+    então nenhum caminho precisa ser especificado, o que pode ser usado para alterar o último commit sem confirmar alterações que tenham sido
+    já foi encenado.  Se usado junto com --allow-empty, os caminhos também não são necessários, e um commit vazio será
+    criado.
 
-   --pathspec-file-nul
-       Only meaningful with --pathspec-from-file. Pathspec elements are separated with NUL character and all other characters
-       are taken literally (including newlines and quotes).
+--pathspec-from-file=&lt;arquivo&gt;
+    Pathspec é passado em &lt;file&gt; em vez de argumentos de linha de comando.  Se &lt;file&gt; for exatamente - então a entrada padrão será usada.  Pathspec
+    os elementos são separados por LF ou CR/LF.  Os elementos Pathspec podem ser citados conforme explicado para a variável de configuração
+    core.quotePath (veja git-config(1)).  Veja também --pathspec-file-nul e global --literal-pathspecs.
 
-   -u[&lt;mode&gt;], --untracked-files[=&lt;mode&gt;]
-       Show untracked files.
+--pathspec-file-nul
+    Apenas significativo com --pathspec-from-file.  Os elementos Pathspec são separados com o caractere NUL e todos os outros caracteres
+    são tomadas literalmente (incluindo novas linhas e aspas).
 
-       The mode parameter is optional (defaults to all), and is used to specify the handling of untracked files; when -u is not
-       used, the default is normal, i.e. show untracked files and directories.
+-u[&lt;mode&gt;], --untracked-files[=&lt;modo&gt;]
+    Mostrar arquivos não rastreados.
 
-       The possible options are:
+    O parâmetro mode é opcional (o padrão é all) e é usado para especificar o tratamento de arquivos não rastreados;  quando -u não é
+    usado, o padrão é normal, ou seja, mostrar arquivos e diretórios não rastreados.
 
-       •   no - Show no untracked files
+    As opções possíveis são:
 
-       •   normal - Shows untracked files and directories
+    • no - não mostra arquivos não rastreados
 
-       •   all - Also shows individual files in untracked directories.
+    • normal - Mostra arquivos e diretórios não rastreados
 
-       The default can be changed using the status.showUntrackedFiles configuration variable documented in git-config(1).
+    • all - também mostra arquivos individuais em diretórios não rastreados.
 
-   -v, --verbose
-       Show unified diff between the HEAD commit and what would be committed at the bottom of the commit message template to
-       help the user describe the commit by reminding what changes the commit has. Note that this diff output doesn’t have its
-       lines prefixed with #. This diff will not be a part of the commit message. See the commit.verbose configuration variable
-       in git-config(1).
+    O padrão pode ser alterado usando a variável de configuração status.showUntrackedFiles documentada em git-config(1).
 
-       If specified twice, show in addition the unified diff between what would be committed and the worktree files, i.e. the
-       unstaged changes to tracked files.
+-v, --verbose
+    Mostrar diferença unificada entre o commit HEAD e o que seria confirmado na parte inferior do modelo de mensagem de commit para
+    ajude o usuário a descrever o commit lembrando quais mudanças o commit possui.  Observe que esta saída diff não tem seu
+    linhas prefixadas com #.  Esta diferença não fará parte da mensagem de confirmação.  Veja a variável de configuração commit.verbose
+    em git-config(1).
 
-   -q, --quiet
-       Suppress commit summary message.
+    Se especificado duas vezes, mostra também a diferença unificada entre o que seria submetido e os arquivos da árvore de trabalho, ou seja, o
+    alterações não preparadas em arquivos rastreados.
 
-   --dry-run
-       Do not create a commit, but show a list of paths that are to be committed, paths with local changes that will be left
-       uncommitted and paths that are untracked.
+-q, --quiet
+    Suprimir a mensagem de resumo do commit.
 
-   --status
-       Include the output of git-status(1) in the commit message template when using an editor to prepare the commit message.
-       Defaults to on, but can be used to override configuration variable commit.status.
+--dry-run(funcionamento a seco)
+    Não crie um commit, mas mostre uma lista de caminhos que serão submetidos, caminhos com alterações locais que serão deixadas
+    não confirmados e caminhos que não são rastreados.
 
-   --no-status
-       Do not include the output of git-status(1) in the commit message template when using an editor to prepare the default
-       commit message.
+--status
+    Inclua a saída de git-status(1) no modelo de mensagem de confirmação ao usar um editor para preparar a mensagem de confirmação.
+    O padrão é on, mas pode ser usado para substituir a variável de configuração commit.status.
 
-   -S[&lt;keyid&gt;], --gpg-sign[=&lt;keyid&gt;], --no-gpg-sign
-       GPG-sign commits. The keyid argument is optional and defaults to the committer identity; if specified, it must be stuck
-       to the option without a space.  --no-gpg-sign is useful to countermand both commit.gpgSign configuration variable, and
-       earlier --gpg-sign.
+--no-status
+    Não inclua a saída de git-status(1) no modelo de mensagem de confirmação ao usar um editor para preparar o padrão
+    mensagem de confirmação.
 
-   --
-       Do not interpret any more arguments as options.
+-S[&lt;keyid&gt;], --gpg-sign[=&lt;keyid&gt;], --no-gpg-sign
+    Compromissos de assinatura GPG.  O argumento keyid é opcional e tem como padrão a identidade do committer;  se especificado, deve estar preso
+    para a opção sem espaço.  --no-gpg-sign é útil para anular a variável de configuração commit.gpgSign e
+    anterior --gpg-sign.
 
-   &lt;pathspec&gt;...
-       When pathspec is given on the command line, commit the contents of the files that match the pathspec without recording
-       the changes already added to the index. The contents of these files are also staged for the next commit on top of what
-       have been staged before.
+--
+    Não interprete mais argumentos como opções.
 
-       For more details, see the pathspec entry in gitglossary(7).
+&lt;pathspec&gt;...
+    Quando pathspec é fornecido na linha de comando, confirme o conteúdo dos arquivos que correspondem ao pathspec sem gravar
+    as alterações já adicionadas ao índice.  O conteúdo desses arquivos também é preparado para o próximo commit em cima do que
+    já foram encenados antes.
+
+    Para mais detalhes, veja a entrada pathspec no gitglossary(7).
 </code></pre>
-<p>EXAMPLES</p>
-<pre><code>When recording your own work, the contents of modified files in your working tree are temporarily stored to a staging area
-   called the &quot;index&quot; with git add. A file can be reverted back, only in the index but not in the working tree, to that of the
-   last commit with git restore --staged &lt;file&gt;, which effectively reverts git add and prevents the changes to this file from
-   participating in the next commit. After building the state to be committed incrementally with these commands, git commit
-   (without any pathname parameter) is used to record what has been staged so far. This is the most basic form of the command.
-   An example:
+<p>EXEMPLOS</p>
+<pre><code>Ao gravar seu próprio trabalho, o conteúdo dos arquivos modificados em sua árvore de trabalho é armazenado temporariamente em uma área de preparação
+chamado de &quot;index&quot; com git add.  Um arquivo pode ser revertido, apenas no índice, mas não na árvore de trabalho, para o arquivo do
+último commit com git restore --staged &lt;file&gt;, que efetivamente reverte git add e impede que as alterações neste arquivo
+participando do próximo commit.  Depois de construir o estado a ser confirmado de forma incremental com esses comandos, git commit
+(sem nenhum parâmetro de nome de caminho) é usado para registrar o que foi encenado até agora.  Esta é a forma mais básica do comando.
+Um exemplo:
 
-       $ edit hello.c
-       $ git rm goodbye.c
-       $ git add hello.c
-       $ git commit
+    $ editar olá.c
+    $ git rm adeus.c
+    $ git add hello.c
+    $ git commit
 
-   Instead of staging files after each individual change, you can tell git commit to notice the changes to the files whose
-   contents are tracked in your working tree and do corresponding git add and git rm for you. That is, this example does the
-   same as the earlier example if there is no other change in your working tree:
+Em vez de preparar os arquivos após cada alteração individual, você pode dizer ao git commit para observar as alterações nos arquivos cujos
+conteúdos são rastreados em sua árvore de trabalho e fazem git add e git rm correspondentes para você.  Ou seja, este exemplo faz o
+igual ao exemplo anterior, se não houver outra alteração em sua árvore de trabalho:
 
-       $ edit hello.c
-       $ rm goodbye.c
-       $ git commit -a
+    $ editar olá.c
+    $ rm adeus.c
+    $ git commit -a
 
-   The command git commit -a first looks at your working tree, notices that you have modified hello.c and removed goodbye.c,
-   and performs necessary git add and git rm for you.
+O comando git commit -a primeiro olha para sua árvore de trabalho, percebe que você modificou hello.c e removeu adeus.c,
+e executa o git add e o git rm necessários para você.
 
-   After staging changes to many files, you can alter the order the changes are recorded in, by giving pathnames to git commit.
-   When pathnames are given, the command makes a commit that only records the changes made to the named paths:
+Depois de preparar as alterações em muitos arquivos, você pode alterar a ordem em que as alterações são gravadas, fornecendo nomes de caminho para git commit.
+Quando os nomes de caminho são fornecidos, o comando faz um commit que registra apenas as alterações feitas nos caminhos nomeados:
 
-       $ edit hello.c hello.h
-       $ git add hello.c hello.h
-       $ edit Makefile
-       $ git commit Makefile
+    $ editar olá.c olá.h
+    $ git add hello.c hello.h
+    $ editar Makefile
+    $ git commit Makefile
 
-   This makes a commit that records the modification to Makefile. The changes staged for hello.c and hello.h are not included
-   in the resulting commit. However, their changes are not lost — they are still staged and merely held back. After the above
-   sequence, if you do:
+Isso faz um commit que registra a modificação no Makefile.  As alterações encenadas para hello.c e hello.h não estão incluídas
+no commit resultante.  No entanto, suas mudanças não são perdidas – elas ainda são encenadas e meramente retidas.  Após o acima
+seqüência, se você fizer:
 
-       $ git commit
+    $ git commit
 
-   this second commit would record the changes to hello.c and hello.h as expected.
+este segundo commit registraria as mudanças em hello.c e hello.h como esperado.
 
-   After a merge (initiated by git merge or git pull) stops because of conflicts, cleanly merged paths are already staged to be
-   committed for you, and paths that conflicted are left in unmerged state. You would have to first check which paths are
-   conflicting with git status and after fixing them manually in your working tree, you would stage the result as usual with
-   git add:
+Depois que uma mesclagem (iniciada por git merge ou git pull) é interrompida devido a conflitos, os caminhos mesclados de forma limpa já estão preparados para serem
+cometidos para você, e os caminhos que entraram em conflito são deixados no estado não mesclado.  Você teria que primeiro verificar quais caminhos são
+em conflito com o status do git e depois de corrigi-los manualmente em sua árvore de trabalho, você prepararia o resultado como de costume com
+git adiciona:
 
-       $ git status | grep unmerged
-       unmerged: hello.c
-       $ edit hello.c
-       $ git add hello.c
+    $ git status |  grep unmerged
+    unmerged: hello.c
+    $ editar olá.c
+    $ git add hello.c
 
-   After resolving conflicts and staging the result, git ls-files -u would stop mentioning the conflicted path. When you are
-   done, run git commit to finally record the merge:
+Depois de resolver conflitos e preparar o resultado, git ls-files -u pararia de mencionar o caminho em conflito.  Quando você é
+feito, execute git commit para finalmente gravar a mesclagem:
 
-       $ git commit
+    $ git commit
 
-   As with the case to record your own changes, you can use -a option to save typing. One difference is that during a merge
-   resolution, you cannot use git commit with pathnames to alter the order the changes are committed, because the merge should
-   be recorded as a single commit. In fact, the command refuses to run when given pathnames (but see -i option).
+Assim como no caso para gravar suas próprias alterações, você pode usar a opção -a para salvar a digitação.  Uma diferença é que durante uma fusão
+resolução, você não pode usar git commit com nomes de caminho para alterar a ordem em que as alterações são confirmadas, porque a mesclagem deve
+ser registrado como um único commit.  Na verdade, o comando se recusa a ser executado quando recebe nomes de caminho (mas veja a opção -i).
 </code></pre>
-<p>COMMIT INFORMATION</p>
-<pre><code>Author and committer information is taken from the following environment variables, if set:
+<p>INFORMAÇÕES DO COMMIT</p>
+<pre><code>As informações do autor e do committer são obtidas das seguintes variáveis ​​de ambiente, se configuradas:
 
-       GIT_AUTHOR_NAME
-       GIT_AUTHOR_EMAIL
-       GIT_AUTHOR_DATE
-       GIT_COMMITTER_NAME
-       GIT_COMMITTER_EMAIL
-       GIT_COMMITTER_DATE
+    GIT_AUTHOR_NAME
+    GIT_AUTHOR_EMAIL
+    GIT_AUTHOR_DATE
+    GIT_COMMITTER_NAME
+    GIT_COMMITTER_EMAIL
+    GIT_COMMITTER_DATE
 
-   (nb &quot;&lt;&quot;, &quot;&gt;&quot; and &quot;\n&quot;s are stripped)
+(nb &quot;&lt;&quot;, &quot;&gt;&quot; e &quot;\n&quot;s são removidos)
 
-   The author and committer names are by convention some form of a personal name (that is, the name by which other humans refer
-   to you), although Git does not enforce or require any particular form. Arbitrary Unicode may be used, subject to the
-   constraints listed above. This name has no effect on authentication; for that, see the credential.username variable in git-
-   config(1).
+Os nomes do autor e do committer são, por convenção, alguma forma de nome pessoal (ou seja, o nome pelo qual outros humanos se referem
+para você), embora o Git não imponha ou exija nenhum formulário específico.  Unicode arbitrário pode ser usado, sujeito à
+restrições listadas acima.  Este nome não tem efeito na autenticação;  para isso, veja a variável credential.username no git-
+configuração(1).
 
-   In case (some of) these environment variables are not set, the information is taken from the configuration items user.name
-   and user.email, or, if not present, the environment variable EMAIL, or, if that is not set, system user name and the
-   hostname used for outgoing mail (taken from /etc/mailname and falling back to the fully qualified hostname when that file
-   does not exist).
+Caso (algumas) essas variáveis ​​de ambiente não estejam configuradas, as informações são retiradas dos itens de configuração user.name
+e user.email, ou, se não estiver presente, a variável de ambiente EMAIL, ou, se não estiver definido, o nome de usuário do sistema e o
+nome do host usado para e-mail de saída (retirado de /etc/mailname e retornando ao nome do host totalmente qualificado quando esse arquivo
+não existe).
 
-   The author.name and committer.name and their corresponding email options override user.name and user.email if set and are
-   overridden themselves by the environment variables.
+O author.name e o committer.name e suas opções de e-mail correspondentes substituem user.name e user.email se configurados e são
+substituídos pelas variáveis ​​de ambiente.
 
-   The typical usage is to set just the user.name and user.email variables; the other options are provided for more complex use
-   cases.
+O uso típico é definir apenas as variáveis ​​user.name e user.email;  as outras opções são fornecidas para uso mais complexo
+casos.
 </code></pre>
-<p>DATE FORMATS</p>
-<pre><code>The GIT_AUTHOR_DATE and GIT_COMMITTER_DATE environment variables support the following date formats:
+<p>FORMATOS DE DATAS</p>
+<pre><code>As variáveis ​​de ambiente GIT_AUTHOR_DATE e GIT_COMMITTER_DATE são compatíveis com os seguintes formatos de data:
 
-   Git internal format
-       It is &lt;unix-timestamp&gt; &lt;time-zone-offset&gt;, where &lt;unix-timestamp&gt; is the number of seconds since the UNIX epoch.
-       &lt;time-zone-offset&gt; is a positive or negative offset from UTC. For example CET (which is 1 hour ahead of UTC) is +0100.
+Formato interno do Git
+    É &lt;unix-timestamp&gt; &lt;time-zone-offset&gt;, onde &lt;unix-timestamp&gt; é o número de segundos desde a época do UNIX.
+    &lt;time-zone-offset&gt; é um deslocamento positivo ou negativo do UTC.  Por exemplo, CET (que está 1 hora à frente do UTC) é +0100.
 
-   RFC 2822
-       The standard email format as described by RFC 2822, for example Thu, 07 Apr 2005 22:13:13 +0200.
+RFC 2822
+    O formato de e-mail padrão conforme descrito pela RFC 2822, por exemplo Thu, 07 Apr 2005 22:13:13 +0200.
 
-   ISO 8601
-       Time and date specified by the ISO 8601 standard, for example 2005-04-07T22:13:13. The parser accepts a space instead of
-       the T character as well. Fractional parts of a second will be ignored, for example 2005-04-07T22:13:13.019 will be
-       treated as 2005-04-07T22:13:13.
+ISO 8601
+    Hora e data especificadas pelo padrão ISO 8601, por exemplo 2005-04-07T22:13:13.  O analisador aceita um espaço em vez de
+    o caractere T também.  Partes fracionárias de um segundo serão ignoradas, por exemplo, 2005-04-07T22:13:13.019 será
+    tratado como 2005-04-07T22:13:13.
 
-           Note
-           In addition, the date part is accepted in the following formats: YYYY.MM.DD, MM/DD/YYYY and DD.MM.YYYY.
+        Observação
+        Além disso, a parte da data é aceita nos seguintes formatos: AAAA.MM.DD, MM/DD/AAAA e DD.MM.AAAA.
 
-   In addition to recognizing all date formats above, the --date option will also try to make sense of other, more
-   human-centric date formats, such as relative dates like &quot;yesterday&quot; or &quot;last Friday at noon&quot;.
+Além de reconhecer todos os formatos de data acima, a opção --date também tentará entender outros formatos mais
+formatos de data centrados no ser humano, como datas relativas como &quot;ontem&quot; ou &quot;última sexta-feira ao meio-dia&quot;.
 </code></pre>
-<p>DISCUSSION</p>
-<pre><code>Though not required, it’s a good idea to begin the commit message with a single short (less than 50 character) line
-   summarizing the change, followed by a blank line and then a more thorough description. The text up to the first blank line
-   in a commit message is treated as the commit title, and that title is used throughout Git. For example, git-format-patch(1)
-   turns a commit into email, and it uses the title on the Subject line and the rest of the commit in the body.
+<p>DISCUSSÃO</p>
+<pre><code>Embora não seja obrigatório, é uma boa ideia começar a mensagem de confirmação com uma única linha curta (menos de 50 caracteres)
+resumindo a mudança, seguido por uma linha em branco e, em seguida, uma descrição mais completa.  O texto até a primeira linha em branco
+em uma mensagem de commit é tratado como o título do commit, e esse título é usado em todo o Git.  Por exemplo, git-format-patch(1)
+transforma um commit em e-mail e usa o título na linha Assunto e o restante do commit no corpo.
 
-   Git is to some extent character encoding agnostic.
+O Git é até certo ponto agnóstico de codificação de caracteres.
 
-   •   The contents of the blob objects are uninterpreted sequences of bytes. There is no encoding translation at the core
-       level.
+• O conteúdo dos objetos blob são sequências de bytes não interpretadas.  Não há tradução de codificação no núcleo
+    nível.
 
-   •   Path names are encoded in UTF-8 normalization form C. This applies to tree objects, the index file, ref names, as well
-       as path names in command line arguments, environment variables and config files (.git/config (see git-config(1)),
-       gitignore(5), gitattributes(5) and gitmodules(5)).
+• Os nomes de caminho são codificados no formato C de normalização UTF-8. Isso se aplica a objetos de árvore, o arquivo de índice, nomes de referência, bem como
+    como nomes de caminho em argumentos de linha de comando, variáveis ​​de ambiente e arquivos de configuração (.git/config (veja git-config(1)),
+    gitignore(5), gitattributes(5) e gitmodules(5)).
 
-       Note that Git at the core level treats path names simply as sequences of non-NUL bytes, there are no path name encoding
-       conversions (except on Mac and Windows). Therefore, using non-ASCII path names will mostly work even on platforms and
-       file systems that use legacy extended ASCII encodings. However, repositories created on such systems will not work
-       properly on UTF-8-based systems (e.g. Linux, Mac, Windows) and vice versa. Additionally, many Git-based tools simply
-       assume path names to be UTF-8 and will fail to display other encodings correctly.
+    Observe que o Git no nível central trata os nomes de caminho simplesmente como sequências de bytes não NUL, não há codificação de nome de caminho
+    conversões (exceto em Mac e Windows).  Portanto, usar nomes de caminho não ASCII funcionará principalmente mesmo em plataformas e
+    sistemas de arquivos que usam codificações ASCII estendidas herdadas.  No entanto, os repositórios criados em tais sistemas não funcionarão
+    corretamente em sistemas baseados em UTF-8 (por exemplo, Linux, Mac, Windows) e vice-versa.  Além disso, muitas ferramentas baseadas em Git simplesmente
+    assumir nomes de caminho como UTF-8 e não exibirá outras codificações corretamente.
 
-   •   Commit log messages are typically encoded in UTF-8, but other extended ASCII encodings are also supported. This includes
-       ISO-8859-x, CP125x and many others, but not UTF-16/32, EBCDIC and CJK multi-byte encodings (GBK, Shift-JIS, Big5, EUC-x,
-       CP9xx etc.).
+• As mensagens de log de confirmação geralmente são codificadas em UTF-8, mas outras codificações ASCII estendidas também são suportadas.  Isso inclui
+    ISO-8859-x, CP125x e muitos outros, mas não codificações multi-byte UTF-16/32, EBCDIC e CJK (GBK, Shift-JIS, Big5, EUC-x,
+    CP9xx etc.).
 
-   Although we encourage that the commit log messages are encoded in UTF-8, both the core and Git Porcelain are designed not to
-   force UTF-8 on projects. If all participants of a particular project find it more convenient to use legacy encodings, Git
-   does not forbid it. However, there are a few things to keep in mind.
+Embora encorajemos que as mensagens de log de confirmação sejam codificadas em UTF-8, tanto o core quanto o Git Porcelain são projetados para não
+forçar UTF-8 em projetos.  Se todos os participantes de um projeto específico acharem mais conveniente usar codificações legadas, o Git
+não o proíbe.  No entanto, há algumas coisas para manter em mente.
 
-    1. git commit and git commit-tree issues a warning if the commit log message given to it does not look like a valid UTF-8
-       string, unless you explicitly say your project uses a legacy encoding. The way to say this is to have
-       i18n.commitEncoding in .git/config file, like this:
+ 1. git commit e git commit-tree emitem um aviso se a mensagem de log de commit fornecida a ele não parecer um UTF-8 válido
+    string, a menos que você diga explicitamente que seu projeto usa uma codificação herdada.  A maneira de dizer isso é ter
+    i18n.commitEncoding no arquivo .git/config, assim:
 
-           [i18n]
-                   commitEncoding = ISO-8859-1
+        [i18n]
+                commitEncoding = ISO-8859-1
 
-       Commit objects created with the above setting record the value of i18n.commitEncoding in its encoding header. This is to
-       help other people who look at them later. Lack of this header implies that the commit log message is encoded in UTF-8.
+    Os objetos de confirmação criados com a configuração acima registram o valor de i18n.commitEncoding em seu cabeçalho de codificação.  Isso é para
+    ajudar outras pessoas que olham para eles mais tarde.  A falta desse cabeçalho implica que a mensagem de log de confirmação está codificada em UTF-8.
 
-    2. git log, git show, git blame and friends look at the encoding header of a commit object, and try to re-code the log
-       message into UTF-8 unless otherwise specified. You can specify the desired output encoding with i18n.logOutputEncoding
-       in .git/config file, like this:
+ 2. git log, git show, git culpado e amigos olham para o cabeçalho de codificação de um objeto de confirmação e tentam recodificar o log
+    mensagem em UTF-8, a menos que especificado de outra forma.  Você pode especificar a codificação de saída desejada com i18n.logOutputEncoding
+    no arquivo .git/config, assim:
 
-           [i18n]
-                   logOutputEncoding = ISO-8859-1
+        [i18n]
+                logOutputEncoding = ISO-8859-1
 
-       If you do not have this configuration variable, the value of i18n.commitEncoding is used instead.
+    Se você não tiver essa variável de configuração, o valor de i18n.commitEncoding será usado.
 
-   Note that we deliberately chose not to re-code the commit log message when a commit is made to force UTF-8 at the commit
-   object level, because re-coding to UTF-8 is not necessarily a reversible operation.
+Observe que optamos deliberadamente por não recodificar a mensagem de log de confirmação quando uma confirmação é feita para forçar o UTF-8 na confirmação
+nível de objeto, porque a recodificação para UTF-8 não é necessariamente uma operação reversível.
 </code></pre>
-<p>ENVIRONMENT AND CONFIGURATION VARIABLES</p>
-<pre><code>   The editor used to edit the commit log message will be chosen from the GIT_EDITOR environment variable, the core.editor
-   configuration variable, the VISUAL environment variable, or the EDITOR environment variable (in that order). See git-var(1)
-   for details.
+<p>VARIÁVEIS DE AMBIENTE E CONFIGURAÇÃO</p>
+<pre><code>   O editor usado para editar a mensagem de log do commit será escolhido a partir da variável de ambiente GIT_EDITOR, o core.editor
+variável de configuração, a variável de ambiente VISUAL ou a variável de ambiente EDITOR (nessa ordem).  Veja git-var(1)
+para detalhes.
 </code></pre>
 <p>HOOKS</p>
-<pre><code>   This command can run commit-msg, prepare-commit-msg, pre-commit, post-commit and post-rewrite hooks. See githooks(5) for
-   more information.
-</code></pre>
-<p>FILES</p>
-<pre><code>   $GIT_DIR/COMMIT_EDITMSG
-       This file contains the commit message of a commit in progress. If git commit exits due to an error before creating a
-       commit, any commit message that has been provided by the user (e.g., in an editor session) will be available in this
-       file, but will be overwritten by the next invocation of git commit.
-</code></pre>
-<p>SEE ALSO</p>
-<pre><code>   git-add(1), git-rm(1), git-mv(1), git-merge(1), git-commit-tree(1)
-</code></pre>
-<p>GIT</p>
-<pre><code>   Part of the git(1) suite
-   Git 2.36.0                                                   	   04/18/2022                                          
+<pre><code>  Este comando pode executar os ganchos commit-m
 </code></pre>
 </body></html>
